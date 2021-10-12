@@ -1,7 +1,9 @@
 /**
 * @class Ajax
 *
-* Realiza requisições AJAX para páginas usando métodos GET ou POST.
+* @description
+* Realiza requisições AJAX para páginas usando métodos GET, POST, e os demais
+* usados para REST (PUT, PATCH e DELETE).
 */
 class Ajax {
   /**
@@ -22,7 +24,7 @@ class Ajax {
 
     // Abrir request:
     this.xhr.open(this.method, this.url, true);
-    }
+  }
 
   /**
   * Ao enviar um conteúdo pelo método POST, caso este precise das chaves CSRF
@@ -47,11 +49,11 @@ class Ajax {
 
   		if(csrfParam != null) {
   			content[csrfParam] = csrfToken;
-  			}
   		}
+  	}
 
   	return content;
-  	}
+  }
 
   /**
   * Envia o request Ajax com as chaves CSRF (Cross-Site Request Forgery). Nesse
@@ -62,7 +64,7 @@ class Ajax {
   */
   sendSecure(content, next) {
   	this.send(this.withCSRF(content), next);
-  	}
+  }
 
   /**
   * Envia o request Ajax. Nesse caso, o único tipo aceito é JSON.
@@ -78,10 +80,10 @@ class Ajax {
   	this.xhr.onreadystatechange = function() {
   		if(this.readyState == Ajax.state.READY) {
   			next(this.responseText, this.status);
-  			}
-  		};
-  	}
+  		}
+  	};
   }
+}
 
 /**
 * @static Ajax
@@ -97,10 +99,10 @@ Ajax.getCSRFParam = function() {
   // Se existir, será retornado o valor encontrado:
   if(tagArray.length > 0 && tagArray[0].hasAttribute("content")) {
   	return tagArray[0].getAttribute("content");
-  	}
+  }
 
   return;
-  };
+};
 
 /**
 * @static Ajax
@@ -116,10 +118,10 @@ Ajax.getCSRFToken = function() {
   // Se existir, será retornado o valor encontrado:
   if(tagArray.length > 0 && tagArray[0].hasAttribute("content")) {
   	return tagArray[0].getAttribute("content");
-  	}
+  }
 
   return;
-  };
+};
 
 /** Estados da conexão AJAX para o request. */
 Ajax.state = {
@@ -128,16 +130,20 @@ Ajax.state = {
 	"REQUEST_RECEIVED": 2,
 	"PROCESSING_REQUEST": 3,
 	"READY": 4
-	};
+};
 
 /** Indicadores do progresso do envio do request. */
 Ajax.status = {
 	"OK": 200,
-	"NOT_FOUND": 404
-	};
+	"NOT_FOUND": 404,
+  "INTERNAL_SERVER_ERROR": 500
+};
 
-/** Métodos de envio de request para o AJAX (GET e POST). */
+/** Métodos de envio de request para o AJAX (GET/POST/PUT/PATCH/DELETE). */
 Ajax.method = {
 	"GET": "GET",
-	"POST": "POST"
-	};
+	"POST": "POST",
+  "PUT": "PUT",
+  "PATCH": "PATCH",
+  "DELETE": "DELETE"
+};
